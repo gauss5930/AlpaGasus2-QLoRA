@@ -15,4 +15,8 @@ To implement the large model in only one GPU, HuggingFace's PEFT and BitsAndByte
 
 ## Parameters
 
-## 그 뒤에 암거나
+## AlpaGasus2-QLoRA Evaluation
+AlpaGauss2-QLoRA evaluation was processed with Eleuther AI's [LLM evaluation harness](https://github.com/EleutherAI/lm-evaluation-harness)!
+The evaluation tasks are tasks that are specified in HF's Open LLM Leaderboard.
+
+
