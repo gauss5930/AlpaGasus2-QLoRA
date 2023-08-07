@@ -27,7 +27,7 @@ Configuration of the dataset is as follows:
 ```
 
 ## Fine-tuning
-We fine-tune our model using the standard Hugging Face training code and referred to [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca).
+We fine-tuned our model using the standard Hugging Face training code and referred to [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca).
 AlpaGasus2-QLoRA was fine-tuned with LLaMA2-7B and LLaMA2-13B with following parameters:
 
 |Hyperparameters|LLaMA2-7B|LLaMA2-13B|
