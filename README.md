@@ -59,7 +59,7 @@ The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
 ## References
 - [Llama2](https://arxiv.org/abs/2307.09288)
 - [Stanford Alpaca](https://crfm.stanford.edu/2023/03/13/alpaca.html)
-- [AlpaGasus]([https://lichang-chen.github.io/AlpaGasus/](https://arxiv.org/abs/2307.08701))
+- [AlpaGasus](https://arxiv.org/abs/2307.08701)
 - [MT-Bench](https://arxiv.org/abs/2306.05685)
 - [gpt4life/alpagasus](https://github.com/gpt4life/alpagasus)
 
