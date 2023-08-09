@@ -129,9 +129,9 @@ The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
 
 ## References
 - [Llama2](https://arxiv.org/abs/2307.09288)
-- [Stanford Alpaca](https://crfm.stanford.edu/2023/03/13/alpaca.html)
+- [Self-Instruct](https://arxiv.org/abs/2212.10560)
+- [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca/tree/main)
 - [AlpaGasus](https://arxiv.org/abs/2307.08701)
-- [MT-Bench](https://arxiv.org/abs/2306.05685)
 - [gpt4life/alpagasus](https://github.com/gpt4life/alpagasus)
 
 ## Citation
@@ -142,16 +142,5 @@ If you find our repository useful, please cite the paper:
   author={Lichang Chen, Shiyang Li, Jun Yan, Hai Wang, Kalpa Gunaratna, Vikas Yadav, Zheng Tang, Vijay Srinivasan, Tianyi Zhou, Heng Huang, Hongxia Jin},
   journal={arXiv preprint arXiv:2307.08701},
   year={2023}
-}
-```
-
-```
-@misc{zheng2023judging,
-      title={Judging LLM-as-a-judge with MT-Bench and Chatbot Arena},
-      author={Lianmin Zheng and Wei-Lin Chiang and Ying Sheng and Siyuan Zhuang and Zhanghao Wu and Yonghao Zhuang and Zi Lin and Zhuohan Li and Dacheng Li and Eric. P Xing and Hao Zhang and Joseph E. Gonzalez and Ion Stoica},
-      year={2023},
-      eprint={2306.05685},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
 }
 ```
