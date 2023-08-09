@@ -23,3 +23,7 @@ def formatting_prompts_func(example):
 # max_steps calculation function
 def max_steps_calc(epochs, batch, data_line_count):
   return int(data_line_count / batch * epochs)
+
+# gradient accumulation steps calculation function
+def gradinet_acc_calc(batch, micro_batch_size):
+  return batch // micro_batch_size
