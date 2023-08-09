@@ -16,7 +16,7 @@ import utils
 def train(
     # model/data params
     base_model: str = "",  # required argument
-    data_path: str = "", # required argument.
+    data_path: str = "", # required argument. You can only load a dataset that consists of 'instruction', 'input', and 'output' formats.
     data_type: str = "", # required argument. If you want to load your own dataset, please put the type of your dataset.
     output_dir: str = "./results",
     auth_token: str = "", # Please put your HuggingFace user authorization code. This token needs when loading LLaMA2 model.
@@ -71,7 +71,10 @@ def train(
     device_map = "auto"
 
     # Load dataset
-    dataset = utils.loading_dataset(data_path)
+    if data_type == "hf":
+        dataset = load_dataset(data_path)
+    else:
+        dataset = utils.loading_dataset(data_path)
 
     # Quantization configuration
     bnb_config = BitsAndBytesConfig(
