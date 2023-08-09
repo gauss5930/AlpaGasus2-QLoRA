@@ -105,7 +105,17 @@ python finetune.py \
 ```
 
 ## AlpaGasus2-QLoRA Evaluation
-### 1. Open LLM Leaderboard Evaluation
+### 1. AlpaGasus Evaluation
+We proceeded with the AlpaGasus Evaluation provided by [gpt4life](https://github.com/gpt4life/alpagasus/tree/main).
+ChatGPT was used to grade the response of AlpaGasus2-QLoRA.
+
+```
+export OPEN_AI_KEY
+cd evaluation/AlpaGasus Evaluation
+sh run_eval.sh
+```
+
+### 2. Open LLM Leaderboard Evaluation
 AlpaGauss2-QLoRA performance was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) 
 The evaluation task used the tasks specified in HF's Open LLM Leaderboard. (ARC, HellaSwag, MMLU, TruthfulQA)
 The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
