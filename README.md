@@ -62,8 +62,8 @@ QLoRA Configuration is as follows:
 ```
 python finetune.py \
     --base_model 'meta-llama/Llama-2-7b-hf' \
-    --data_path 'your_data_path' \
-    --data_type 'your data's type' \
+    --data_path 'AlpaGasus2-QLoRA/dataset/alpaca_t45.json' \
+    --data_type 'json' \
     --output_dir './results' \
     --auth_token 'your HuggingFace Authorization code' \
     --num_epochs 3 \
@@ -74,10 +74,10 @@ python finetune.py \
 ```
 python finetune.py \
     --base_model 'meta-llama/Llama-2-13b-hf' \
-    --data_path 'your data' \
-    --data_type 'your data's type' \
+    --data_path 'AlpaGasus2-QLoRA/dataset/alpaca_t45.json' \
+    --data_type 'json' \
     --output_dir './results' \
-    --auth_token 'your HuggingFace Authorization code'
+    --auth_token 'your HuggingFace authorization key'
     --num_epochs 5 \
     --learning_rate 1e-5
 ```
@@ -88,6 +88,7 @@ python finetune.py \
     --base_model 'your model' \
     --data_path 'your data' \
     --data_type 'your data's type' \
+    --auth_token 'your HuggingFace authorization key'
     --output_dir './results' \
     --batch_size 128 \
     --micro_batch_size 4 \
