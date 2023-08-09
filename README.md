@@ -135,7 +135,7 @@ The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
 - [gpt4life/alpagasus](https://github.com/gpt4life/alpagasus)
 
 ## Citation
-If you find our repository useful, please cite the paper:
+If you find it is a useful repository, please cite the paper:
 ```
 @article{chen2023alpagasus,
   title={AlpaGasus: Training a Better Alpaca with Fewer Data},
