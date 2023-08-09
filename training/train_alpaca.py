@@ -17,7 +17,7 @@ def train(
     # model/data params
     base_model: str = "",  # required argument
     data_path: str = "", # required argument.
-    data_type: srt = "", # required argument. If you want to load your own dataset, please put the type of your dataset.
+    data_type: str = "", # required argument. If you want to load your own dataset, please put the type of your dataset.
     output_dir: str = "./results",
     auth_token: str = "", # Please put your HuggingFace user authorization code. This token needs when loading LLaMA2 model.
     # training hyperparams
