@@ -1,223 +1,153 @@
-#    Copyright 2023 Rohan Taori, Ishaan Gulrajani, Tianyi Zhang, Yann Dubois, Xuechen Li
-#
-#    Licensed under the Apache License, Version 2.0 (the "License");
-#    you may not use this file except in compliance with the License.
-#    You may obtain a copy of the License at
-#
-#        http://www.apache.org/licenses/LICENSE-2.0
-#
-#    Unless required by applicable law or agreed to in writing, software
-#    distributed under the License is distributed on an "AS IS" BASIS,
-#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#    See the License for the specific language governing permissions and
-#    limitations under the License.
+import os
+import sys
+from typing import List
 
-import copy
-import logging
-from dataclasses import dataclass, field
-from typing import Dict, Optional, Sequence
-
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
+from datasets import load_dataset
+import sentencepiece
+from peft import LoraConfig, prepare_model_for_kbit_training
+from trl import SFTTrainer
+import json
 import torch
-import transformers
-from torch.utils.data import Dataset
-from transformers import Trainer
+import logging
 
 import utils
 
-IGNORE_INDEX = -100
-DEFAULT_PAD_TOKEN = "[PAD]"
-DEFAULT_EOS_TOKEN = "</s>"
-DEFAULT_BOS_TOKEN = "<s>"
-DEFAULT_UNK_TOKEN = "<unk>"
-PROMPT_DICT = {
-    "prompt_input": (
-        "Below is an instruction that describes a task, paired with an input that provides further context. "
-        "Write a response that appropriately completes the request.\n\n"
-        "### Instruction:\n{instruction}\n\n### Input:\n{input}\n\n### Response:"
-    ),
-    "prompt_no_input": (
-        "Below is an instruction that describes a task. "
-        "Write a response that appropriately completes the request.\n\n"
-        "### Instruction:\n{instruction}\n\n### Response:"
-    ),
-}
-
-
-@dataclass
-class ModelArguments:
-    model_name_or_path: Optional[str] = field(default="facebook/opt-125m")
-
-
-@dataclass
-class DataArguments:
-    data_path: str = field(default=None, metadata={"help": "Path to the training data."})
-
-
-@dataclass
-class TrainingArguments(transformers.TrainingArguments):
-    cache_dir: Optional[str] = field(default=None)
-    optim: str = field(default="adamw_torch")
-    model_max_length: int = field(
-        default=512,
-        metadata={"help": "Maximum sequence length. Sequences will be right padded (and possibly truncated)."},
-    )
-
-
-def smart_tokenizer_and_embedding_resize(
-    special_tokens_dict: Dict,
-    tokenizer: transformers.PreTrainedTokenizer,
-    model: transformers.PreTrainedModel,
+def train(
+    # model/data params
+    base_model: str = "",  # required argument
+    data_path: str = "", # required argument.
+    data_type: srt = "", # required argument. If you want to load your own dataset, please put the type of your dataset.
+    output_dir: str = "./results",
+    auth_token: str = "", # Please put your HuggingFace user authorization code. This token needs when loading LLaMA2 model.
+    # training hyperparams
+    batch_size: int = 128, # The batch size of Stanford Alpaca
+    micro_batch_size: int = 4,
+    num_epochs: int = 3,   # Set to 3 if you want to fine-tune 7b models. Set to 5 if you want to fine-tune 13b models.
+    learning_rate: float = 2e-5, # Set to 2e-5 if you want to fine-tune 7b models. Set to 1e-5 if you want to fine-tune 13b models.
+    cutoff_len: int = 256,
+    # bnb hyperparams
+    load_in_4bit: bool = True,
+    bnb_4bit_quant_type: str = 'nf4',
+    bnb_4bit_double_quant: bool = True,
+    # lora hyperparams
+    lora_r: int = 8,
+    lora_alpha: int = 32,
+    lora_dropout: float = 0.05,
+    lora_bias: str = "none",
+    lora_task_type: str = "CAUSAL_LM",
+    lora_target_modules: List[str] = [
+        "q_proj",
+        "v_proj",
+    ],
 ):
-    """Resize tokenizer and embedding.
-
-    Note: This is the unoptimized version that may make your embedding size not be divisible by 64.
-    """
-    num_new_tokens = tokenizer.add_special_tokens(special_tokens_dict)
-    model.resize_token_embeddings(len(tokenizer))
-
-    if num_new_tokens > 0:
-        input_embeddings = model.get_input_embeddings().weight.data
-        output_embeddings = model.get_output_embeddings().weight.data
-
-        input_embeddings_avg = input_embeddings[:-num_new_tokens].mean(dim=0, keepdim=True)
-        output_embeddings_avg = output_embeddings[:-num_new_tokens].mean(dim=0, keepdim=True)
-
-        input_embeddings[-num_new_tokens:] = input_embeddings_avg
-        output_embeddings[-num_new_tokens:] = output_embeddings_avg
-
-
-def _tokenize_fn(strings: Sequence[str], tokenizer: transformers.PreTrainedTokenizer) -> Dict:
-    """Tokenize a list of strings."""
-    tokenized_list = [
-        tokenizer(
-            text,
-            return_tensors="pt",
-            padding="longest",
-            max_length=tokenizer.model_max_length,
-            truncation=True,
+    if int(os.environ.get("LOCAL_RANK", 0)) == 0:
+        print(
+            f"Training Alpaca-LoRA model with params:\n"
+            f"base_model: {base_model}\n"
+            f"data_path: {data_path}\n"
+            f"data_type: {data_type}\n"
+            f"output_dir: {output_dir}\n"
+            f"auth_token: {auth_token}\n"
+            f"batch_size: {batch_size}\n"
+            f"micro_batch_size: {micro_batch_size}\n"
+            f"num_epochs: {num_epochs}\n"
+            f"learning_rate: {learning_rate}\n"
+            f"cutoff_len: {cutoff_len}\n"
+            f"load_in_4bit: {load_in_4bit}\n"
+            f"bnb_4bit_quant_type: {bnb_4bit_quant_type}\n"
+            f"bnb_4bit_double_quant: {bnb_4bit_double_quant}\n"
+            f"lora_r: {lora_r}\n"
+            f"lora_alpha: {lora_alpha}\n"
+            f"lora_dropout: {lora_dropout}\n"
+            f"lora_bias: {lora_bias}\n",
+            f"lora_task_type: {lora_task_type}\n",
+            f"lora_target_modules: {lora_target_modules}\n"
         )
-        for text in strings
-    ]
-    input_ids = labels = [tokenized.input_ids[0] for tokenized in tokenized_list]
-    input_ids_lens = labels_lens = [
-        tokenized.input_ids.ne(tokenizer.pad_token_id).sum().item() for tokenized in tokenized_list
-    ]
-    return dict(
-        input_ids=input_ids,
-        labels=labels,
-        input_ids_lens=input_ids_lens,
-        labels_lens=labels_lens,
+    assert (
+        base_model
+    ),
+
+    device_map = "auto"
+
+    # Load dataset
+    dataset = utils.loading_dataset(data_path)
+
+    # Quantization configuration
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=load_in_4bit,
+        bnb_4bit_quant_type=bnb_quant_type,
+        bnb_4bit_double_quant=bnb_4bit_double_quant,
+        bnb_4bit_compute_type=torch.float16,
     )
 
-
-def preprocess(
-    sources: Sequence[str],
-    targets: Sequence[str],
-    tokenizer: transformers.PreTrainedTokenizer,
-) -> Dict:
-    """Preprocess the data by tokenizing."""
-    examples = [s + t for s, t in zip(sources, targets)]
-    examples_tokenized, sources_tokenized = [_tokenize_fn(strings, tokenizer) for strings in (examples, sources)]
-    input_ids = examples_tokenized["input_ids"]
-    labels = copy.deepcopy(input_ids)
-    for label, source_len in zip(labels, sources_tokenized["input_ids_lens"]):
-        label[:source_len] = IGNORE_INDEX
-    return dict(input_ids=input_ids, labels=labels)
-
-
-class SupervisedDataset(Dataset):
-    """Dataset for supervised fine-tuning."""
-
-    def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer):
-        super(SupervisedDataset, self).__init__()
-        logging.warning("Loading data...")
-        list_data_dict = utils.jload(data_path)
-
-        logging.warning("Formatting inputs...")
-        prompt_input, prompt_no_input = PROMPT_DICT["prompt_input"], PROMPT_DICT["prompt_no_input"]
-        sources = [
-            prompt_input.format_map(example) if example.get("input", "") != "" else prompt_no_input.format_map(example)
-            for example in list_data_dict
-        ]
-        targets = [f"{example['output']}{tokenizer.eos_token}" for example in list_data_dict]
-
-        logging.warning("Tokenizing inputs... This may take some time...")
-        data_dict = preprocess(sources, targets, tokenizer)
-
-        self.input_ids = data_dict["input_ids"]
-        self.labels = data_dict["labels"]
-
-    def __len__(self):
-        return len(self.input_ids)
-
-    def __getitem__(self, i) -> Dict[str, torch.Tensor]:
-        return dict(input_ids=self.input_ids[i], labels=self.labels[i])
-
-
-@dataclass
-class DataCollatorForSupervisedDataset(object):
-    """Collate examples for supervised fine-tuning."""
-
-    tokenizer: transformers.PreTrainedTokenizer
-
-    def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
-        input_ids, labels = tuple([instance[key] for instance in instances] for key in ("input_ids", "labels"))
-        input_ids = torch.nn.utils.rnn.pad_sequence(
-            input_ids, batch_first=True, padding_value=self.tokenizer.pad_token_id
-        )
-        labels = torch.nn.utils.rnn.pad_sequence(labels, batch_first=True, padding_value=IGNORE_INDEX)
-        return dict(
-            input_ids=input_ids,
-            labels=labels,
-            attention_mask=input_ids.ne(self.tokenizer.pad_token_id),
-        )
-
-
-def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer, data_args) -> Dict:
-    """Make dataset and collator for supervised fine-tuning."""
-    train_dataset = SupervisedDataset(tokenizer=tokenizer, data_path=data_args.data_path)
-    data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
-    return dict(train_dataset=train_dataset, eval_dataset=None, data_collator=data_collator)
-
-
-def train():
-    parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
-    model_args, data_args, training_args = parser.parse_args_into_dataclasses()
-
-    model = transformers.AutoModelForCausalLM.from_pretrained(
-        model_args.model_name_or_path,
-        cache_dir=training_args.cache_dir,
+    # Load Model with Quantization config
+    model = AutoModelForCausalLM.from_pretrained(
+        base_model,
+        quantization_config=bnb_config,
+        trust_remote_code=True,
+        device_map=device_map,
+        use_auth_token=auth_token,
     )
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained(
-        model_args.model_name_or_path,
-        cache_dir=training_args.cache_dir,
-        model_max_length=training_args.model_max_length,
-        padding_side="right",
-        use_fast=False,
-    )
-    special_tokens_dict = dict()
-    if tokenizer.pad_token is None:
-        special_tokens_dict["pad_token"] = DEFAULT_PAD_TOKEN
-    if tokenizer.eos_token is None:
-        special_tokens_dict["eos_token"] = DEFAULT_EOS_TOKEN
-    if tokenizer.bos_token is None:
-        special_tokens_dict["bos_token"] = DEFAULT_BOS_TOKEN
-    if tokenizer.unk_token is None:
-        special_tokens_dict["unk_token"] = DEFAULT_UNK_TOKEN
+    # Model Preprocessing
+    model.config.use_cache = False
+    model = prepare_model_for_kbit_training(model)
 
-    smart_tokenizer_and_embedding_resize(
-        special_tokens_dict=special_tokens_dict,
-        tokenizer=tokenizer,
+    # Load Tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(
+        base_model,
+        max_seq_length=cutoff_len,
+        trust_remote_code=True,
+        use_auth_token=auth_token,
+    )
+
+    # Tokenizer specific option
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
+
+    # LoRA configuration
+    peft_config = LoraConfig(
+        r=lora_r,
+        lora_alpha=lora_alpha,
+        lora_dropout=lora_dropout,
+        bias=lora_bias,
+        task_type=lora_task_type,
+        target_modules=lora_traget_modules,
+    )
+
+    # TrainingArguments
+    steps = utils.max_steps_calc(num_epochs, batch_size, len(dataset))
+    gradient_accumulation_steps = utils.gradient_acc_calc(batch_size, micro_batch_size)
+
+    training_args = TrainingArguments(
+        output_dir=output_dir,
+        per_device_batch_size=micro_batch_size,
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        save_strategy="steps",
+        save_steps=10,
+        save_total_limit=1,
+        weight_decay=0,
+        learning_rate=learning_rate,
+        warmup_ratio=0.03,
+        max_steps=steps,
+        lr_scheduler_type="cosine",
+        logging_steps=10,
+    )
+
+    # SFTTrainer
+    trainer=SFTTrainer(
         model=model,
+        train_dataset=dataset,
+        peft_config=peft_config,
+        formatting_func=utils.formatting_prompts_func,
+        max_seq_length=cut_off_len,
+        tokenizer=tokenizer,
+        args=training_args
     )
-
-    data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
-    trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
-    trainer.train()
-    trainer.save_state()
-    trainer.save_model(output_dir=training_args.output_dir)
-
+    
+    model_to_save = trainer.model.module if hasattr(trainer.model, 'module') else trainer.model  # Take care of distributed/parallel training
+    model_to_save.save_pretrained(output_dir)
 
 if __name__ == "__main__":
     train()
