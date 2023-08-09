@@ -26,6 +26,13 @@ Configuration of the dataset is as follows:
 .
 ```
 
+## Requirements
+If you want to run finetune.py, you need to install some libraries specified in 'requirements.txt'.
+
+```
+pip install -r requirements.txt
+```
+
 ## Fine-tuning
 We fine-tuned our model using the standard Hugging Face training code and referred to [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca).
 AlpaGasus2-QLoRA was fine-tuned with LLaMA2-7B and LLaMA2-13B with following parameters:
@@ -49,6 +56,52 @@ QLoRA Configuration is as follows:
 |LoRA alpha|32|
 |LoRA dropout|0.05|
 |target modules|q_proj, v_proj|
+
+
+- For the instruction-finetuning of LLaMA-2-7B:
+```
+python finetune.py \
+    --base_model 'meta-llama/Llama-2-7b-hf' \
+    --data_path 'your_data_path' \
+    --data_type 'your data's type' \
+    --output_dir './results' \
+    --auth_token 'your HuggingFace Authorization code' \
+    --num_epochs 3 \
+    --learning_rate 2e-5
+```
+
+- For the instruction-finetuning of LLaMA-2-13B:
+```
+python finetune.py \
+    --base_model 'meta-llama/Llama-2-13b-hf' \
+    --data_path 'your data' \
+    --data_type 'your data's type' \
+    --output_dir './results' \
+    --auth_token 'your HuggingFace Authorization code'
+    --num_epochs 5 \
+    --learning_rate 1e-5
+```
+
+You can modify the arguments according to your taste!
+```
+python finetune.py \
+    --base_model 'your model' \
+    --data_path 'your data' \
+    --data_type 'your data's type' \
+    --output_dir './results' \
+    --batch_size 128 \
+    --micro_batch_size 4 \
+    --num_epochs 3 \
+    --learning_rate 2e-5 \
+    --cutoff_len 512 \
+    --load_in_4bit True \
+    --bnb_4bit_quant_type 'nf4' \
+    --bnb_4bit_double_quant True \
+    --lora_r 8 \
+    --lora_alpha 32 \
+    --lora_dropout 0.05 \
+    --lora_target_modules '[q_proj,v_proj]' \
+```
 
 ## AlpaGasus2-QLoRA Evaluation
 ### 1. Open LLM Leaderboard Evaluation
