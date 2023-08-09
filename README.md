@@ -34,7 +34,7 @@ AlpaGasus2-QLoRA was fine-tuned with LLaMA2-7B and LLaMA2-13B with following par
 |---|---|---|
 |Batch size|128|128|
 |learning rate|2e-5|1e-5|
-|Epochs|3|3|
+|Epochs|3|5|
 |Max Length|512|512|
 |weight decay|0|0|
 
@@ -52,9 +52,16 @@ QLoRA Configuration is as follows:
 
 ## AlpaGasus2-QLoRA Evaluation
 ### 1. Open LLM Leaderboard Evaluation
-AlpaGauss2-QLoRA evaluation was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) 
-The evaluation tasks are tasks that are specified in HF's Open LLM Leaderboard. (ARC, HellaSwag, MMLU, TruthfulQA)
+AlpaGauss2-QLoRA performance was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) 
+The evaluation task used the tasks specified in HF's Open LLM Leaderboard. (ARC, HellaSwag, MMLU, TruthfulQA)
 The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
+
+|Benchmarks|7B|13B|
+|---|---|---|
+|ARC|||
+|HellaSwag|||
+|MMLU|||
+|TruthfulQA|||
 
 ## References
 - [Llama2](https://arxiv.org/abs/2307.09288)
