@@ -1,8 +1,8 @@
 from datasets import load_dataset
 
 # Loading json type dataset using load_dataset of datasets library
-def loading_dataset(data_path):
-  data = load_dataset('json', data_files = '/content/drive/MyDrive/Research/AlpaGasus2-QLoRA/alpaca_t45.json')
+def loading_dataset(data_path, data_type):
+  data = load_dataset(data_type, data_files = data_path)
   dataset = data['train']
   return dataset
 
