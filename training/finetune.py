@@ -1,6 +1,5 @@
-import os
-import sys
 from typing import List
+import fire
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
 from datasets import load_dataset
@@ -150,9 +149,10 @@ def train(
     )
 
     trainer.train()
-    
+
+    trainer.model.save_pretrained(cfg["hub_model_id"])
     model_to_save = trainer.model.module if hasattr(trainer.model, 'module') else trainer.model  # Take care of distributed/parallel training
     model_to_save.save_pretrained(output_dir)
 
 if __name__ == "__main__":
-    train()
+    fire.Fire(train)
