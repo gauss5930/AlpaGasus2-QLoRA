@@ -16,8 +16,9 @@ def train(
     # model/data params
     base_model: str = "",  # required argument
     data_path: str = "", # required argument. You can only load a dataset that consists of 'instruction', 'input', and 'output' formats.
-    data_type: str = "hf", # required argument. If you want to load your own dataset, please put the type of your dataset.
+    data_type: str = "hf", # required argument. If you want to load your own dataset, please put the type of your dataset. You can also load HuggingFace dataset if you set 'hf'.
     output_dir: str = "./results",
+    hub_path: str = "", # Your HuggingFace Hub path to upload fine-tuned model
     auth_token: str = "", # Please put your HuggingFace user authorization code. This token needs when loading LLaMA2 model.
     # training hyperparams
     batch_size: int = 128, # The batch size of Stanford Alpaca
@@ -25,6 +26,7 @@ def train(
     num_epochs: int = 3,   # Set to 3 if you want to fine-tune 7b models. Set to 5 if you want to fine-tune 13b models.
     learning_rate: float = 2e-5, # Set to 2e-5 if you want to fine-tune 7b models. Set to 1e-5 if you want to fine-tune 13b models.
     cutoff_len: int = 256,
+    val_set_size: float = 0.05,
     # bnb hyperparams
     load_in_4bit: bool = True,
     bnb_4bit_quant_type: str = 'nf4',
@@ -47,12 +49,14 @@ def train(
             f"data_path: {data_path}\n"
             f"data_type: {data_type}\n"
             f"output_dir: {output_dir}\n"
+            f"hub_paht: {hub_path}"
             f"auth_token: {auth_token}\n"
             f"batch_size: {batch_size}\n"
             f"micro_batch_size: {micro_batch_size}\n"
             f"num_epochs: {num_epochs}\n"
             f"learning_rate: {learning_rate}\n"
             f"cutoff_len: {cutoff_len}\n"
+            f"val_set_size: {val_set_size}\n"
             f"load_in_4bit: {load_in_4bit}\n"
             f"bnb_4bit_quant_type: {bnb_4bit_quant_type}\n"
             f"bnb_4bit_double_quant: {bnb_4bit_double_quant}\n"
@@ -72,8 +76,10 @@ def train(
     # Load dataset
     if data_type == "hf":
         dataset = load_dataset(data_path)
+        if val_set_size > 0:
+            dataset = dataset.train_test_split(test_size=val_set_size)
     else:
-        dataset = utils.loading_dataset(data_path)
+        dataset = utils.loading_dataset(data_path, data_type, val_set_size)
 
     # Quantization configuration
     bnb_config = BitsAndBytesConfig(
@@ -94,6 +100,7 @@ def train(
 
     # Model Preprocessing
     model.config.use_cache = False
+    model.config.pretraining_tp = 1
     model = prepare_model_for_kbit_training(model)
 
     # Load Tokenizer
@@ -119,40 +126,58 @@ def train(
     )
 
     # TrainingArguments
-    steps = utils.max_steps_calc(num_epochs, batch_size, len(dataset))
+    if not val_set_size > 0:
+        steps = utils.max_steps_calc(num_epochs, batch_size, len(dataset))
     gradient_accumulation_steps = utils.gradient_acc_calc(batch_size, micro_batch_size)
 
-    training_args = TrainingArguments(
-        output_dir=output_dir,
-        per_device_batch_size=micro_batch_size,
-        gradient_accumulation_steps=gradient_accumulation_steps,
-        save_strategy="steps",
-        save_steps=10,
-        save_total_limit=1,
-        weight_decay=0,
-        learning_rate=learning_rate,
-        warmup_ratio=0.03,
-        max_steps=steps,
-        lr_scheduler_type="cosine",
-        logging_steps=10,
-    )
 
+    training_args = TrainingArguments(
+            output_dir=output_dir,
+            num_train_epochs=num_epochs if val_set_size > 0 else None,
+            per_device_train_batch_size=micro_batch_size,
+            per_device_eval_batch_size=micro_batch_size if val_set_size > 0 else None,
+            gradient_accumulation_steps=gradient_accumulation_steps,
+            eval_accumulation_steps=gradient_accumulation_steps if val_set_size > 0 else None,
+            save_strategy="epoch" if val_set_size > 0 else "steps",
+            evaluation_strategy="epoch" if val_set_size > 0 else None,
+            save_steps=None if val_set_size > 0 else 10,
+            save_total_limit=1,
+            weight_decay=0,
+            learning_rate=learning_rate,
+            warmup_ratio=0.03,
+            max_steps=-1 if val_set_size > 0 else steps,
+            lr_scheduler_type="cosine",
+            logging_steps=1,
+        )
+    
     # SFTTrainer
     trainer=SFTTrainer(
         model=model,
-        train_dataset=dataset,
+        train_dataset=dataset["train"] if val_set_size > 0 else dataset,
+        eval_dataset=dataset["test"] if val_set_size > 0 else None,
         peft_config=peft_config,
-        formatting_func=utils.formatting_prompts_func,
+        dataset_text_field="text",
         max_seq_length=cut_off_len,
         tokenizer=tokenizer,
-        args=training_args
+        args=training_args,
+        packing=False
     )
 
     trainer.train()
 
-    trainer.model.save_pretrained(cfg["hub_model_id"])
-    model_to_save = trainer.model.module if hasattr(trainer.model, 'module') else trainer.model  # Take care of distributed/parallel training
-    model_to_save.save_pretrained(output_dir)
+    trainer.model.save_pretrained(hub_path)
+    
+    if hub_path:
+        del model
+        torch.cuda.empty_cache()
+
+        model = AutoPeftModelForCausalLM.from_pretrained(
+            hub_path, device_map="auto", torch_dtype=torch.bfloat16
+        )
+        model = model.merge_and_unload()
+
+        model.push_to_hub(hub_path, use_temp_dir=False)
+        tokenizer.push_to_hub(hub_path, use_temp_dir=False)
 
 if __name__ == "__main__":
     fire.Fire(train)
