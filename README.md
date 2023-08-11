@@ -1,13 +1,14 @@
 # AlpaGasus2-QLoRA 🦙🦄🤏
-This is an unofficial implementation of 'AlpaGasus: Training a better Alpaca with Fewer Data.' with LLaMA2 & QLoRA! The trained model is available at the [HuggingFace Hub]()
+This is an unofficial implementation of 'AlpaGasus: Training a better Alpaca with Fewer Data.' with LLaMA2 & QLoRA! The trained model is available at the [HuggingFace Hub](https://huggingface.co/StudentLLM)
 
-This repository contains the source codes that implement AlpaGasus2-QLoRA using LLaMA2 and QLoRA.
-Model size variants are 7B and 13B, for each of them we used LLaMA2-7B and LLaMA2-13B. 
-For the dataset, [gpt4life](https://github.com/gpt4life/alpagasus)'s alpaca_t45 dataset filtered by fpt-3.5-turbo-0301 was utilized to implement AlpaGasus2-QLoRA.
+This repository contains the source codes implementing AlpaGasus2-QLoRA with LLaMA2 and QLoRA.
+Model size variants are 7B and 13B, for each of them we used [LLaMA2-7B-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) and [LLaMA2-13B](https://huggingface.co/meta-llama/Llama-2-13b-hf). 
+For the dataset, [gpt4life](https://github.com/gpt4life/alpagasus)'s alpaca_t45 dataset filtered by gpt-3.5-turbo-0301 was utilized.
 
-For implementing AlpaGasus2-QLoRA, Google Colab's single A100 80G GPU was used. 
-In addition, we used QLoRA to implement the large model in only one GPU.
+For implementing AlpaGasus2-QLoRA, Google Colab's single A100 40G GPU was used! 
+In addition, we used [QLoRA](https://arxiv.org/abs/2305.14314) to implement the large model in only one GPU.
 For implementing AlpaGasus2-QLoRA with QLoRA, HuggingFace's PEFT and BitsAndBytes library were utilized.
+Further, the SFTTrainer of trl library was used to fine-tune the model.
 
 ## Dataset
 AlpaGasus carefully selected higher-quality data through filtering on the original Alpaca instruction dataset to show improved performance than the original Alpaca.
@@ -126,6 +127,8 @@ AlpaGauss2-QLoRA performance was uploaded on HuggingFace's [Open LLM Leaderboard
 The evaluation task used the tasks specified in HF's Open LLM Leaderboard. (ARC, HellaSwag, MMLU, TruthfulQA)
 The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
 
+**Coming Soon!**
+
 |Benchmarks|7B|13B|
 |---|---|---|
 |ARC|||
@@ -137,6 +140,7 @@ The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
 - [Llama2](https://arxiv.org/abs/2307.09288)
 - [Self-Instruct](https://arxiv.org/abs/2212.10560)
 - [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca/tree/main)
+- [QLoRA](https://arxiv.org/abs/2305.14314)
 - [AlpaGasus](https://arxiv.org/abs/2307.08701)
 - [gpt4life/alpagasus](https://github.com/gpt4life/alpagasus)
 
