@@ -42,7 +42,7 @@ AlpaGasus2-QLoRA was fine-tuned with LLaMA2-7B and LLaMA2-13B with following par
 |Batch size|128|128|
 |learning rate|2e-5|1e-5|
 |Epochs|3|5|
-|Max Length|512|512|
+|Max Length|256|256|
 |weight decay|0|0|
 
 In addition, we also used QLoRA to save memory and speed up the fine-tuning of LLMs.
@@ -65,9 +65,11 @@ python finetune.py \
     --data_path 'AlpaGasus2-QLoRA/dataset/alpaca_t45.json' \
     --data_type 'json' \
     --output_dir './results' \
+    --hub_path 'Hub path to upload the model'
     --auth_token 'your HuggingFace Authorization code' \
     --num_epochs 3 \
-    --learning_rate 2e-5
+    --learning_rate 2e-5 \
+    --val_set_size 0.05
 ```
 
 - For the instruction-finetuning of LLaMA-2-13B:
@@ -77,9 +79,11 @@ python finetune.py \
     --data_path 'AlpaGasus2-QLoRA/dataset/alpaca_t45.json' \
     --data_type 'json' \
     --output_dir './results' \
+    --hub_path 'Hub path to upload the model'
     --auth_token 'your HuggingFace authorization key'
     --num_epochs 5 \
     --learning_rate 1e-5
+    --val_set_size 0.05
 ```
 
 You can modify the arguments according to your taste!
@@ -88,6 +92,7 @@ python finetune.py \
     --base_model 'your model' \
     --data_path 'your data' \
     --data_type 'your data's type' \
+    --hub_path 'Hub path to upload the model'
     --auth_token 'your HuggingFace authorization key'
     --output_dir './results' \
     --batch_size 128 \
@@ -95,6 +100,7 @@ python finetune.py \
     --num_epochs 3 \
     --learning_rate 2e-5 \
     --cutoff_len 512 \
+    --val_set_size 0.05 \
     --load_in_4bit True \
     --bnb_4bit_quant_type 'nf4' \
     --bnb_4bit_double_quant True \
