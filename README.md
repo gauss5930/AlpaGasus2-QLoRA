@@ -2,7 +2,7 @@
 This is an unofficial implementation of 'AlpaGasus: Training a better Alpaca with Fewer Data.' with LLaMA2 & QLoRA! The trained model is available at the [HuggingFace Hub](https://huggingface.co/StudentLLM)
 
 This repository contains the source codes implementing AlpaGasus2-QLoRA with LLaMA2 and QLoRA.
-Model size variants are 7B and 13B, for each of them we used [LLaMA2-7B-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) and [LLaMA2-13B](https://huggingface.co/meta-llama/Llama-2-13b-hf). 
+Model size variants are 7B and 13B, for each of them we used [LLaMA2-7B-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) and [LLaMA2-13B-hf](https://huggingface.co/meta-llama/Llama-2-13b-hf). 
 For the dataset, [gpt4life](https://github.com/gpt4life/alpagasus)'s alpaca_t45 dataset filtered by gpt-3.5-turbo-0301 was utilized.
 
 For implementing AlpaGasus2-QLoRA, Google Colab's single A100 40G GPU was used! 
