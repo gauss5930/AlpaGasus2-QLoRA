@@ -111,6 +111,9 @@ python finetune.py \
     --lora_target_modules '[q_proj,v_proj]' \
 ```
 
+## Response Data
+Please check more specific information [here](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/response_data)!
+
 ## AlpaGasus2-QLoRA Evaluation
 ### 1. AlpaGasus Evaluation
 We proceeded with the AlpaGasus Evaluation provided by [gpt4life](https://github.com/gpt4life/alpagasus/tree/main).
