@@ -21,6 +21,9 @@ def main(
   )
   model = PeftModel.from_pretrained(model, lora_weight)
 
+  test_data = ['koala_test_set.jsonl', 'sinstruct_test_set.jsonl', 'vicuna_test_set.jsonl']
+  col = ['prompt', '', 'text']
+  
   result = []
   for i in range(len(test_data)):
     path = test_path + test_data[i]
