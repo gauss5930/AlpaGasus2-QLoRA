@@ -4,14 +4,13 @@ We collected the response data of AlpaGasus2-QLoRA for evaluating and comparing 
 Please run the 'generate.py' following the instructions below to collect the response data.
 
 ```python
-for test_data in 'koala_test_set.jsonl', 'sinstruct_test_set.jsonl', 'vicuna_test_set.jsonl':
-    for model_type in 'alpaca2', 'alapgasus2':
-        do
-            python generate.py \
-                --base_model 'meta-llama/Llama-2-13b-hf' \
-                --lora_weight model_type \
-                --auth_token 'your authorization token' \
-                --file_path 'AlpaGasus2-QLoRA/test_data/' \
-                --save_path './results/' \    
-        done
+for model_type in 'alpaca2', 'alapgasus2'
+    do
+        python generate.py \
+            --base_model 'meta-llama/Llama-2-13b-hf' \
+            --lora_weight model_type \
+            --auth_token 'your authorization token' \
+            --file_path 'AlpaGasus2-QLoRA/test_data/' \
+            --save_path './results/' \    
+    done
 ```
