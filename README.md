@@ -112,17 +112,8 @@ python finetune.py \
 ```
 
 ## Generation
-For generating the output of the AlpaGasus2-QLoRA model, please follow the following code!
-
-**AlpaGasus2-QLoRA-7b**
-```python
-from peft import PeftModel, PeftConfig
-from transformers import AutoModelForCausalLM
-
-config = PeftConfig.from_pretrained("StudentLLM/Alpagasus-2-7B-QLoRA")
-model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf")
-model = PeftModel.from_pretrained(model, "StudentLLM/Alpagasus-2-7B-QLoRA")
-```
+For generating the output of the AlpaGasus2-QLoRA model, please follow the following code! 
+We only provide the usage of a 13B model, but the use of the 7b model is the same!
 
 **AlpaGasus2-QLoRA-13b**
 ```python
@@ -132,6 +123,13 @@ from transformers import AutoModelForCausalLM
 config = PeftConfig.from_pretrained("StudentLLM/Alpagasus-2-13B-QLoRA")
 model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-13b-hf")
 model = PeftModel.from_pretrained(model, "StudentLLM/Alpagasus-2-13B-QLoRA")
+
+input_data = "Please tell me 3 ways to relieve stress."
+
+model_inputs = tokenizer(input_data, return_tensors='pt').to(torch_device)
+model_output = model.generate(**model_inputs, max_new_tokens=256)
+model_output = tokenizer.decode(model_output[0], skip_special_tokens=True)
+model_output
 ```
 
 ## AlpaGasus2-QLoRA Evaluation
