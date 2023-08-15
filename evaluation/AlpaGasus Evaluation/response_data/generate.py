@@ -12,8 +12,13 @@ def main(
   save_path: str = "",
 ):
   
+  if lora_weight == "alpaca2":
+    lora_weight = "Abe13/Llama-2-13b-hf-Lora_Alpaca-juniper-v0"
+  elif lora_weight == "alpagasus2":
+    lora_weight = "StudentLLM/Alpagasus-2-13B-QLoRA"
+    
   tokenizer = AutoTokenizer.from_pretrained(lora_weight)
-
+  
   config = PeftConfig.from_pretrained(lora_weight)
   model = AutoModelForCausalLM.from_pretrained(
       base_model,
@@ -58,7 +63,7 @@ def main(
         output = {"alpagasus2": model_output}    # Change the name of model to what model you use
         result.append(ind.update(output))
   
-    with open(save_path, "x") as json_file:
+    with open(sv_path, "x") as json_file:
       json.dump(result, json_file, indent=4)
 
 if __name__ == "__main__":
