@@ -112,7 +112,7 @@ python finetune.py \
 ```
 
 ## Response Data
-Please check more specific information [here](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/response_data)!
+Please check more specific information [here](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/evaluation/AlpaGasus%20Evaluation/response_data)!
 
 ## AlpaGasus2-QLoRA Evaluation
 ### 1. AlpaGasus Evaluation
