@@ -3,7 +3,7 @@ This is an unofficial implementation of 'AlpaGasus: Training a better Alpaca wit
 
 This repository contains the source codes implementing AlpaGasus2-QLoRA with LLaMA2 and QLoRA.
 Model size variants are 7B and 13B, for each of them we used [LLaMA2-7B-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) and [LLaMA2-13B-hf](https://huggingface.co/meta-llama/Llama-2-13b-hf). 
-For the dataset, [gpt4life](https://github.com/gpt4life/alpagasus)'s alpaca_t45 dataset filtered by gpt-3.5-turbo-0301 was utilized.
+[gpt4life](https://github.com/gpt4life/alpagasus)'s alpaca_t45 dataset filtered by gpt-3.5-turbo-0301 was utilized.
 
 For implementing AlpaGasus2-QLoRA, Google Colab's single A100 40G GPU was used! 
 In addition, we used [QLoRA](https://arxiv.org/abs/2305.14314) to implement the large model in only one GPU.
@@ -28,7 +28,7 @@ Configuration of the dataset is as follows:
 ```
 
 ## Requirements
-If you want to run finetune.py, you need to install some libraries specified in 'requirements.txt'.
+If you want to run finetune.py, install some libraries specified in 'requirements.txt'.
 
 ```
 pip install -r requirements.txt
@@ -111,8 +111,28 @@ python finetune.py \
     --lora_target_modules '[q_proj,v_proj]' \
 ```
 
-## Response Data
-Please check more specific information [here](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/evaluation/AlpaGasus%20Evaluation/response_data)!
+## Generation
+For generating the output of the AlpaGasus2-QLoRA model, please follow the following code!
+
+**AlpaGasus2-QLoRA-7b**
+```python
+from peft import PeftModel, PeftConfig
+from transformers import AutoModelForCausalLM
+
+config = PeftConfig.from_pretrained("StudentLLM/Alpagasus-2-7B-QLoRA")
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf")
+model = PeftModel.from_pretrained(model, "StudentLLM/Alpagasus-2-7B-QLoRA")
+```
+
+**AlpaGasus2-QLoRA-13b**
+```python
+from peft import PeftModel, PeftConfig
+from transformers import AutoModelForCausalLM
+
+config = PeftConfig.from_pretrained("StudentLLM/Alpagasus-2-13B-QLoRA")
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-13b-hf")
+model = PeftModel.from_pretrained(model, "StudentLLM/Alpagasus-2-13B-QLoRA")
+```
 
 ## AlpaGasus2-QLoRA Evaluation
 ### 1. AlpaGasus Evaluation
