@@ -1,5 +1,6 @@
 from peft import PeftModel, PeftConfig
 from transformers import AutoModelForCausalLM
+import torch
 import json
 import jsonlines
 import fire
@@ -13,17 +14,20 @@ def main(
 ):
   
   if lora_weight == "alpaca2":
-    lora_weight = "Abe13/Llama-2-13b-hf-Lora_Alpaca-juniper-v0"
+    lora_weight = "Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2"
   elif lora_weight == "alpagasus2":
     lora_weight = "StudentLLM/Alpagasus-2-13B-QLoRA"
-    
+
+  device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+  
   tokenizer = AutoTokenizer.from_pretrained(lora_weight)
+  tokenizer.pad_token = tokenizer.eos_token
   
   config = PeftConfig.from_pretrained(lora_weight)
   model = AutoModelForCausalLM.from_pretrained(
       base_model,
       use_auth_token=auth_token,
-  )
+  ).to(device)
   model = PeftModel.from_pretrained(model, lora_weight)
 
   test_data = ['koala_test_set.jsonl', 'sinstruct_test_set.jsonl', 'vicuna_test_set.jsonl']
@@ -35,7 +39,7 @@ def main(
     path = test_path + test_data[i]
     count = 0
     name = test_data[i].split('_')[0]
-    sv_path = save_path + name + "_seed_0.json"
+    sv_path = lora_weight + "_" + save_path + name + "_seed_0.json"
     with jsonlines.open(path) as f:
       for line in f:
         if col[i]:
@@ -45,23 +49,27 @@ def main(
             input_data = f"Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.\n\n### Instruction:\n{line['instruction']}\n\n### Input:\n{line['instances'][0]['input']}\n\n### Response:\n"
           else:
             input_data = f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{line['instruction']}\n\n### Response:\n"
-        model_inputs = tokenizer(input_data, return_tensors='pt').to(torch_device)
-        model_output = model.generate(**model_inputs, max_new_tokens=256)
-        model_output = tokenizer.decode(model_output[0], skip_special_tokens=True)
+        model_inputs = tokenizer(input_data, return_tensors='pt').to(device)
+        num_tokens = len(tokenizer.tokenize(input_data))
+        model_output = model.generate(**model_inputs, max_length=512+num_tokens)   
+        model_output = tokenizer.decode(model_output[0], skip_special_tokens=True, clean_up_tokenization_spaces=False)
+        model_output = model_output.split("Response:")[1]    # post-processing
+        if lora_weight == 'alpaca2':
+          model_output = model_output.split("###End")[0]
+        elif lora_weight == 'alpagasus2':
+          model_output = model_output.split("###")[0]
         count += 1
+        output = {}
         index = name + '_' + str(count)
-        ind = {"question_id": index}
-        instruction = {col[i]: line[col[i]]}
-        ind.update(instruction)
+        output['question_id'] = index
+        output[col[i]] = line[col[i]]
         if col[i] == 'instruction':
           if line['instances'][0]['input']:
-            input = {'instances': [{'input': line['instances'][0]['input']}]}
-            ind.update(input)
+            output['instances'] = [{'input': line['instances'][0]['input']}]
           else:
-            input = {'instances': [{'input': ""}]}
-            ind.update(input)
-        output = {"alpagasus2": model_output}    # Change the name of model to what model you use
-        result.append(ind.update(output))
+            output['instances'] = [{'input': ""}]
+        output[lora_weight] = model_output
+        result.append(output)
   
     with open(sv_path, "x") as json_file:
       json.dump(result, json_file, indent=4)
