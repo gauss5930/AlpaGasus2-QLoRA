@@ -17,7 +17,7 @@ def num_tokens_from_string(string: str):
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-# openai.api_key = ''
+openai.api_key = os.getenv("API_KEY")
 async def dispatch_openai_requests(
     messages_list: list[list[dict[str,Any]]],
     model: str,
@@ -86,7 +86,7 @@ def get_json_list(file_path):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="ChatGPT-based QA evaluation.")
+    parser = argparse.ArgumentParser(description="GPT4-based QA evaluation.")
     parser.add_argument("-qa", "--qa_file")
     parser.add_argument("-k1", "--key_1")
     parser.add_argument("-k2", "--key_2")
@@ -121,9 +121,6 @@ if __name__ == "__main__":
     elif("sinstruct" in args.qa_file):
         prompt_key = 'instruction'
         dst = 'sinstruct'
-    elif("wizardlm" in args.qa_file):
-        prompt_key = 'Instruction'
-        dst = 'wizardlm'
 
     for i in question_idx_list:
         instruction = qa_jsons[i][prompt_key]
@@ -131,7 +128,7 @@ if __name__ == "__main__":
             instances = qa_jsons[i]['instances']
             assert len(instances) == 1
             if  instances[0]['input']:
-                ques = '{instruction} Input: {input}'.format(instruction=instruction,input= instances[0]['input'])
+                ques = '{instruction} Input: {input}'.format(instruction=instruction,input=instances[0]['input'])
             else:
                 ques = instruction
         else:
@@ -177,7 +174,7 @@ if __name__ == "__main__":
         except:
             retry += 1
             error += 1
-            print("Batch error: ",i, i+batch_size)
+            print("Batch error: ", i, i+batch_size)
             print("retry number: ", retry)
             print("error number: ", error)
             time.sleep(wait_base)
@@ -190,7 +187,7 @@ if __name__ == "__main__":
         os.mkdir(output_dir)
     output_review_f = os.path.join(output_dir, output_review_file)
     
-    with open(f"{output_review_f}", "w") as f:
+    with open(f"{output_review_f}", "x") as f:
         for idx, prediction in enumerate(predictions):
             review = prediction['choices'][0]['message']['content']
             scores = parse_score(review)
