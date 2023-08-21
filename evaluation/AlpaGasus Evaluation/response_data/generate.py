@@ -39,7 +39,7 @@ def main(
     path = test_path + test_data[i]
     count = 0
     name = test_data[i].split('_')[0]
-    sv_path = lora_weight + "_" + save_path + name + "_seed_0.json"
+    sv_path = save_path + lora_weight + "_" +  name + "_seed_0.json"
     with jsonlines.open(path) as f:
       for line in f:
         if col[i]:
