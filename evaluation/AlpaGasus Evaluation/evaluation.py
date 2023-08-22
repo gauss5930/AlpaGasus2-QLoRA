@@ -8,7 +8,7 @@ import asyncio
 from typing import Any
 import logging
 import tiktoken
-gpt_encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+gpt_encoding = tiktoken.encoding_for_model("gpt-4-0613")
 def num_tokens_from_string(string: str):
     """Returns the number of tokens in a text string."""
     encoding = gpt_encoding
