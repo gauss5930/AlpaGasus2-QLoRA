@@ -61,7 +61,7 @@ QLoRA Configuration is as follows:
 
 - For the instruction-finetuning of LLaMA-2-7B:
 ```
-python finetune.py \
+python AlpaGasus2-QLoRA/training/finetune.py \
     --base_model 'meta-llama/Llama-2-7b-hf' \
     --data_path 'AlpaGasus2-QLoRA/dataset/alpaca_t45.json' \
     --data_type 'json' \
@@ -75,7 +75,7 @@ python finetune.py \
 
 - For the instruction-finetuning of LLaMA-2-13B:
 ```
-python finetune.py \
+python AlpaGasus2-QLoRA/training/finetune.py \
     --base_model 'meta-llama/Llama-2-13b-hf' \
     --data_path 'AlpaGasus2-QLoRA/dataset/alpaca_t45.json' \
     --data_type 'json' \
@@ -89,7 +89,7 @@ python finetune.py \
 
 You can modify the arguments according to your taste!
 ```
-python finetune.py \
+python AlpaGasus2-QLoRA/training/finetune.py \
     --base_model 'your model' \
     --data_path 'your data' \
     --data_type 'your data's type' \
