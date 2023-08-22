@@ -119,15 +119,18 @@ We only provide the usage of a 13B model, but the use of the 7b model is the sam
 ```python
 from peft import PeftModel, PeftConfig
 from transformers import AutoModelForCausalLM
+import torch
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 config = PeftConfig.from_pretrained("StudentLLM/Alpagasus-2-13B-QLoRA")
-model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-13b-hf")
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-13b-hf", use_auth_token="yotu_HuggingFace_token").to(device)
 model = PeftModel.from_pretrained(model, "StudentLLM/Alpagasus-2-13B-QLoRA")
 
 input_data = "Please tell me 3 ways to relieve stress."
 
-model_inputs = tokenizer(input_data, return_tensors='pt').to(torch_device)
-model_output = model.generate(**model_inputs, max_new_tokens=256)
+model_inputs = tokenizer(input_data, return_tensors='pt').to(device)
+model_output = model.generate(**model_inputs, max_length=256)
 model_output = tokenizer.decode(model_output[0], skip_special_tokens=True)
 model_output
 ```
