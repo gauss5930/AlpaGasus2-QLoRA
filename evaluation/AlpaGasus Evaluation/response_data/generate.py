@@ -7,7 +7,7 @@ import fire
 
 def main(
   base_model: str = "meta-llama/Llama-2-13b-hf",
-  lora_weight: str = "StudentLLM/Alpagasus-2-13B-QLoRA",
+  lora_weight: str = "alpaca2 or alpagasus2",
   auth_token: str = "",
   test_path: str = "AlpaGasus2-QLoRA/test_data/",
   save_path: str = "",
@@ -26,12 +26,13 @@ def main(
   config = PeftConfig.from_pretrained(lora_weight)
   model = AutoModelForCausalLM.from_pretrained(
       base_model,
+      trust_remote_code=True,
       use_auth_token=auth_token,
   ).to(device)
   model = PeftModel.from_pretrained(model, lora_weight)
 
   test_data = ['koala_test_set.jsonl', 'sinstruct_test_set.jsonl', 'vicuna_test_set.jsonl']
-  col = ['prompt', 'instruction', 'text']
+  col = ['prompt', 'instruction', 'text']   # Columns of each test dataset
   
 
   for i in range(len(test_data)):
@@ -51,11 +52,12 @@ def main(
             input_data = f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{line['instruction']}\n\n### Response:\n"
         model_inputs = tokenizer(input_data, return_tensors='pt').to(device)
         num_tokens = len(tokenizer.tokenize(input_data))
-        model_output = model.generate(**model_inputs, max_length=512+num_tokens)   
+        max_length = 512 + num_tokens if 512 + num_tokens <= 4096 else 4096
+        model_output = model.generate(**model_inputs, max_length=max_length)   
         model_output = tokenizer.decode(model_output[0], skip_special_tokens=True, clean_up_tokenization_spaces=False)
         model_output = model_output.split("Response:")[1]    # post-processing
         if lora_weight == 'alpaca2':
-          model_output = model_output.split("###End")[0]
+          model_output = model_output.split("### End")[0]
         elif lora_weight == 'alpagasus2':
           model_output = model_output.split("###")[0]
         count += 1
