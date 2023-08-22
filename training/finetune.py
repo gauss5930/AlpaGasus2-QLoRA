@@ -69,7 +69,7 @@ def train(
         )
     assert (
         base_model
-    ),
+    )
 
     device_map = "auto"
 
