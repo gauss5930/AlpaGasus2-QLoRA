@@ -141,7 +141,7 @@ We proceeded with the AlpaGasus Evaluation provided by [gpt4life](https://github
 ChatGPT was used to grade the response of AlpaGasus2-QLoRA.
 
 ```
-export OPEN_AI_KEY
+export API_KEY
 cd evaluation/AlpaGasus Evaluation
 sh run_eval.sh
 ```
