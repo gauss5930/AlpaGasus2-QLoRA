@@ -1,5 +1,6 @@
 from typing import List
 import fire
+import os
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TrainingArguments
 from datasets import load_dataset
