@@ -85,7 +85,7 @@ def train(
     # Quantization configuration
     bnb_config = BitsAndBytesConfig(
         load_in_4bit=load_in_4bit,
-        bnb_4bit_quant_type=bnb_quant_type,
+        bnb_4bit_quant_type=bnb_4bit_quant_type,
         bnb_4bit_double_quant=bnb_4bit_double_quant,
         bnb_4bit_compute_type=torch.float16,
     )
