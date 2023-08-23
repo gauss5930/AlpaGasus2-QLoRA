@@ -17,7 +17,7 @@ def num_tokens_from_string(string: str):
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-openai.api_key = os.getenv("API_KEY")
+openai.api_key = os.environ.get("API_KEY")
 async def dispatch_openai_requests(
     messages_list: list[list[dict[str,Any]]],
     model: str,
