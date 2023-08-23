@@ -1,8 +1,10 @@
 # AlpaGasus Evaluation
 
 We tried to follow the evaluation metric introduced by AlpaGasus paper.
-During the process, we consulted to the code by [gpt4life](https://github.com/gpt4life/alpagasus/blob/main/evaluation/eval.py), unofficial implementation of AlpaGasus.
+During the process, we consulted the code by [gpt4life](https://github.com/gpt4life/alpagasus/blob/main/evaluation/eval.py), an unofficial implementation of AlpaGasus.
 Due to resource constraints, we have replaced the evaluator model from GPT-4 to gpt-3.5-turbo.
+For the same reason, the WizardLM Evaluation dataset was excluded.
+We exclusively evaluated AlpaGasus2-QLoRA using 'koala', 'self-instruct', and 'vicuna' test sets.
 
 ### Running evaluation.py
 
