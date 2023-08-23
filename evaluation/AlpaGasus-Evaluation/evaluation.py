@@ -47,6 +47,7 @@ def api_generation(
             top_p=top_p,
         )
     ]
+    time.sleep(3)   # Preventing rate limits
     return responses
 
 def parse_score(review):
@@ -132,7 +133,6 @@ def main():
                 top_p=1.0,
             ))
         pbar.update(i)
-        time.sleep(5)
     pbar.close()
 
     output_dir = args.output_dir
