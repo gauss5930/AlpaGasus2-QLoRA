@@ -132,6 +132,7 @@ def main():
                 top_p=1.0,
             ))
         pbar.update(i)
+        time.sleep(5)
     pbar.close()
 
     output_dir = args.output_dir
