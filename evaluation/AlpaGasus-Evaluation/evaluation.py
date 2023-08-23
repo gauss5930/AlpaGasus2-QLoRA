@@ -4,50 +4,50 @@ import os
 import time
 import openai
 from tqdm import tqdm
-import asyncio
 from typing import Any
 import logging
-import tiktoken
-gpt_encoding = tiktoken.encoding_for_model("gpt-4")
-def num_tokens_from_string(string: str):
-    """Returns the number of tokens in a text string."""
-    encoding = gpt_encoding
-    num_tokens = len(encoding.encode(string))
-    return num_tokens
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--API_KEY", type=str)
+    parser.add_argument("--model", type=str)
+    parser.add_argument("-qa", "--qa_file")
+    parser.add_argument("-k1", "--key_1")
+    parser.add_argument("-k2", "--key_2")
+    parser.add_argument(
+        "--max_tokens",
+        type=int,
+        default=256,
+        help="maximum number of tokens produced in the output",
+    )
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        help="The output dir."
+    )
+
+    return parser.parse_args()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-openai.api_key = os.environ.get("API_KEY")
-async def dispatch_openai_requests(
-    messages_list: list[list[dict[str,Any]]],
+
+def api_generation(
+    messages: str,
     model: str,
     temperature: float,
     max_tokens: int,
     top_p: float,
-) -> list[str]:
-    """Dispatches requests to OpenAI API asynchronously.
-    
-    Args:
-        messages_list: List of messages to be sent to OpenAI ChatCompletion API.
-        model: OpenAI model to use.
-        temperature: Temperature to use for the model.
-        max_tokens: Maximum number of tokens to generate.
-        top_p: Top p to use for the model.
-
-    Returns:
-        List of responses from OpenAI API.
-    """
-    async_responses = [
-        openai.ChatCompletion.acreate(
+):
+    responses = [
+        openai.ChatCompletion.create(
             model=model,
-            messages=x,
+            messages=messages,
             temperature=temperature,
             max_tokens=max_tokens,
             top_p=top_p,
         )
-        for x in messages_list
     ]
-    return await asyncio.gather(*async_responses)
+    return responses
 
 def parse_score(review):
     try:
@@ -76,38 +76,11 @@ def gen_prompt(ques, ans1, ans2):
     return sys_prompt, prompt
 
 
-def get_json_list(file_path):
-    file_path = os.path.expanduser(file_path)
-    with open(file_path, "r") as f:
-        json_list = []
-        for line in f:
-            json_list.append(json.loads(line))
-        return json_list
+def main():
+    args = parse_args()
 
+    openai.api_key = args.API_KEY
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="GPT4-based QA evaluation.")
-    parser.add_argument("-qa", "--qa_file")
-    parser.add_argument("-k1", "--key_1")
-    parser.add_argument("-k2", "--key_2")
-    parser.add_argument(
-        "--batch_size",
-        type=int,
-        default=10,
-        help="Batch size to call OpenAI GPT",
-    )
-    parser.add_argument(
-        "--max_tokens",
-        type=int,
-        default=256,
-        help="maximum number of tokens produced in the output",
-    )
-    parser.add_argument(
-        "--output_dir",
-        type=str,
-        help="The output dir."
-    )
-    args = parser.parse_args()
     qa_jsons = json.load(open(args.qa_file))
     message_list = []
     total_len = len(qa_jsons)
@@ -139,7 +112,7 @@ if __name__ == "__main__":
         ans2 = qa_jsons[i][args.key_2]
         
         sys_prompt, prompt = gen_prompt(ques, ans1, ans2)
-        message =[
+        message = [
                     {"role": "system", "content": sys_prompt},
                     {
                         "role": "user",
@@ -147,50 +120,33 @@ if __name__ == "__main__":
                     },
         ]
         message_list.append(message)
-    
+
     predictions = []
-    i = 0
-    wait_base = 10
-    retry = 0
-    error = 0
     pbar = tqdm(total=len(message_list))
-    batch_size = args.batch_size
-    while(i<len(message_list)):
-        try:
-            batch_predictions = asyncio.run(
-                dispatch_openai_requests(
-                    messages_list=message_list[i:i+batch_size],
-                    model="gpt-4",
-                    temperature=0.0,
-                    max_tokens=args.max_tokens,
-                    top_p=1.0,
-                )
-            )
-            predictions += batch_predictions
-            retry = 0
-            i += batch_size
-            wait_base = 10
-            pbar.update(batch_size)
-        except:
-            retry += 1
-            error += 1
-            print("Batch error: ", i, i+batch_size)
-            print("retry number: ", retry)
-            print("error number: ", error)
-            time.sleep(wait_base)
-            wait_base = wait_base*2
+    for i in range(len(message_list)):
+        predictions.append(api_generation(
+                messages=message_list[i],
+                model=args.model,
+                temperature=0.0,
+                max_tokens=256,
+                top_p=1.0,
+            ))
+        pbar.update(i)
     pbar.close()
-    
+
     output_dir = args.output_dir
-    output_review_file = args.key_1 +'-'+args.key_2 +'-'+ dst + '.json'
+    output_review_file = args.key_1 + '-' + args.key_2 + '-' + dst + '.json'
     if os.path.isdir(output_dir) is not True:
         os.mkdir(output_dir)
     output_review_f = os.path.join(output_dir, output_review_file)
-    
+
     with open(f"{output_review_f}", "x") as f:
         for idx, prediction in enumerate(predictions):
-            review = prediction['choices'][0]['message']['content']
+            review = prediction[0]['choices'][0]['message']['content']
             scores = parse_score(review)
             qa_jsons[idx]["review"] = review
             qa_jsons[idx]["score"] = scores
         json.dump(qa_jsons, f, indent=4)
+
+if __name__ == "__main__":
+    main()
