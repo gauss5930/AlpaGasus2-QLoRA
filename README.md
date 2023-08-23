@@ -137,14 +137,12 @@ model_output
 
 ## AlpaGasus2-QLoRA Evaluation
 ### 1. AlpaGasus Evaluation
-We proceeded with the AlpaGasus Evaluation provided by [gpt4life](https://github.com/gpt4life/alpagasus/tree/main).
-ChatGPT was used to grade the response of AlpaGasus2-QLoRA.
 
-```
-export API_KEY
-cd evaluation/AlpaGasus Evaluation
-sh run_eval.sh
-```
+We tried to follow the evaluation metric introduced by AlpaGasus paper. 
+During the process, we consulted the code by gpt4life, an unofficial implementation of AlpaGasus.
+We used the gpt-3.5-turbo as the evaluator model, and [Alpaca2-LoRA](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model. For more detailed information, please refer to the [AlpaGasus-Evaluation](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/evaluation/AlpaGasus-Evaluation) file.
+
+Model-based evaluation results will be uploaded soon!
 
 ### 2. Open LLM Leaderboard Evaluation
 AlpaGauss2-QLoRA performance was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) 
@@ -164,6 +162,8 @@ The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
 - [Llama2](https://arxiv.org/abs/2307.09288)
 - [Self-Instruct](https://arxiv.org/abs/2212.10560)
 - [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca/tree/main)
+- [Vicuna](https://lmsys.org/blog/2023-03-30-vicuna/)
+- [Koala](https://bair.berkeley.edu/blog/2023/04/03/koala/)
 - [QLoRA](https://arxiv.org/abs/2305.14314)
 - [AlpaGasus](https://arxiv.org/abs/2307.08701)
 - [gpt4life/alpagasus](https://github.com/gpt4life/alpagasus)
