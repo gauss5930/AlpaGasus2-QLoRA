@@ -8,7 +8,7 @@ import asyncio
 from typing import Any
 import logging
 import tiktoken
-gpt_encoding = tiktoken.encoding_for_model("gpt-4-0613")
+gpt_encoding = tiktoken.encoding_for_model("gpt-4")
 def num_tokens_from_string(string: str):
     """Returns the number of tokens in a text string."""
     encoding = gpt_encoding
@@ -160,7 +160,7 @@ if __name__ == "__main__":
             batch_predictions = asyncio.run(
                 dispatch_openai_requests(
                     messages_list=message_list[i:i+batch_size],
-                    model="gpt-4-0613",
+                    model="gpt-4",
                     temperature=0.0,
                     max_tokens=args.max_tokens,
                     top_p=1.0,
