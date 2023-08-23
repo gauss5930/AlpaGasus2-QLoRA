@@ -132,7 +132,8 @@ def main():
                 max_tokens=256,
                 top_p=1.0,
             ))
-        pbar.update(i)
+        time.sleep(3)
+        pbar.update(1)
     pbar.close()
 
     output_dir = args.output_dir
