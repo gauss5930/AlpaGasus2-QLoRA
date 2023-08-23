@@ -11,6 +11,6 @@ The provided code below is for the running of evaluation.py. When executing the 
 ```python
 %cd AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation
 for eval_file in 'koala_seed_0.json', 'sinstruct_seed_0.json', 'vicuna_seed_0.json':
-    python evaluation.py --API_KEY your_own_API_KEY -qa AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation/response_data/results/${eval_file} -k1 alpaca2 -k2 alpagasus2 --max_tokens 256 --output_dir AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation/rating_data/
-    python evaluation.py --API_KEY your_own_API_KEY -qa AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation/response_data/results/${eval_file} -k1 alpagasus2 -k2 alpaca2 --max_tokens 256 --output_dir AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation/rating_data/ 
+    python evaluation.py --API_KEY your_own_API_KEY --model your_model -qa AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation/response_data/results/${eval_file} -k1 alpaca2 -k2 alpagasus2 --max_tokens 256 --output_dir AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation/rating_data/
+    python evaluation.py --API_KEY your_own_API_KEY --model your_model -qa AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation/response_data/results/${eval_file} -k1 alpagasus2 -k2 alpaca2 --max_tokens 256 --output_dir AlpaGasus2-QLoRA/evaluation/AlpaGasus-Evaluation/rating_data/ 
 ```
