@@ -10,6 +10,11 @@ In addition, we used [QLoRA](https://arxiv.org/abs/2305.14314) to implement the 
 For implementing AlpaGasus2-QLoRA with QLoRA, HuggingFace's PEFT and BitsAndBytes library were utilized.
 Further, the SFTTrainer of trl library was used to fine-tune the model.
 
+For evaluating AlpaGasus2-QLoRA, we tried to follow the evaluation metric of AlpaGasus as much as possible.
+gpt-3.5-turbo was used for the evaluator model, and [Alpaca2-LoRA](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) was used for the comparison model.
+
+
+
 ## Dataset
 AlpaGasus carefully selected higher-quality data through filtering on the original Alpaca instruction dataset to show improved performance than the original Alpaca.
 For data filtering, gpt-3.5-turbo was used, as a result, the dataset was filtered from 52K to 9K.
@@ -35,7 +40,7 @@ pip install -r requirements.txt
 ```
 
 ## Fine-tuning
-We fine-tuned our model using the standard Hugging Face training code and referred to [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca).
+We fine-tuned our model using the SFTTrainer of the trl library and referred to [Stanford Alpaca](https://github.com/tatsu-lab/stanford_alpaca).
 AlpaGasus2-QLoRA was fine-tuned with LLaMA2-7B and LLaMA2-13B with following parameters:
 
 |Hyperparameters|LLaMA2-7B|LLaMA2-13B|
@@ -127,7 +132,10 @@ config = PeftConfig.from_pretrained("StudentLLM/Alpagasus-2-13B-QLoRA")
 model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-13b-hf", use_auth_token="yotu_HuggingFace_token").to(device)
 model = PeftModel.from_pretrained(model, "StudentLLM/Alpagasus-2-13B-QLoRA")
 
-input_data = "Please tell me 3 ways to relieve stress."
+tokenizer = AutoTokenizer.from_pretrained("StudentLLM/Alpagasus-2-13B-QLoRA")
+tokenizer.pad_token = tokenizer.eos_token
+
+input_data = "Please tell me 3 ways to relieve stress."   # You can enter any questions!!
 
 model_inputs = tokenizer(input_data, return_tensors='pt').to(device)
 model_output = model.generate(**model_inputs, max_length=256)
@@ -141,6 +149,8 @@ model_output
 We tried to follow the evaluation metric introduced by AlpaGasus paper. 
 During the process, we consulted the code by gpt4life, an unofficial implementation of AlpaGasus.
 We used the gpt-3.5-turbo as the evaluator model, and [Alpaca2-LoRA-13B](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model. For more detailed information, please refer to the [AlpaGasus-Evaluation](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/evaluation/AlpaGasus-Evaluation) file.
+
+The evaluation result of AlpaGasus2-QLoRA is as follows: 
 
 ![results](https://github.com/gauss5930/AlpaGasus2-QLoRA/assets/80087878/1dbc56ac-5cb0-4821-95ed-267e79acfd3f)
 
