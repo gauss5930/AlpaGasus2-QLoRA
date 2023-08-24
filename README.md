@@ -144,6 +144,14 @@ We used the gpt-3.5-turbo as the evaluator model, and [Alpaca2-LoRA-13B](https:/
 
 ![results](https://github.com/gauss5930/AlpaGasus2-QLoRA/assets/80087878/1dbc56ac-5cb0-4821-95ed-267e79acfd3f)
 
+A result graph presented that AlpaGasus2 outperforms Alpaca2 overwhelmingly. 
+In the AlphaGasus paper, they also claimed that AlphaGasus outperforms Alpaca. 
+However, the results in the paper do not exhibit a substantial difference in performance.
+We believe that these experimental results to the following reasons.
+
+- While AlphaGasus2 was directly fine-tuned using the LLaMA2 model by us, the resource constraints prevented separate fine-tuning of Alpaca2. Consequently, we employed a pre-existing model deemed suitable. However, due to the inability to access precise learning specifics, we cannot ascertain the adequacy of the training process, thereby hindering a detailed analysis of the underlying reasons for the obtained results. Nevertheless, it is my conjecture that the substantial variance in performance stems from potential imperfections in the fine-tuning of the Alpaca2 model obtained from the HuggingFace Hub.
+- Nonetheless, as evident from the outcomes reported in the AlphaGasus paper, AlphaGasus2 demonstrates superior performance when compared to Alpaca2. This result reaffirms that data quality plays an important role than data quantity during the fine-tuning process.
+
 ### 2. Open LLM Leaderboard Evaluation
 AlpaGauss2-QLoRA performance was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) 
 The evaluation task used the tasks specified in HF's Open LLM Leaderboard. (ARC, HellaSwag, MMLU, TruthfulQA)
