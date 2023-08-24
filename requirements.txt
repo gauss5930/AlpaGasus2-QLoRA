@@ -1,4 +1,6 @@
 torch
+numpy
+matplotlib
 transformers
 datasets
 sentencepiece
@@ -9,4 +11,3 @@ trl
 jsonlines
 fire
 openai
-tiktoken
