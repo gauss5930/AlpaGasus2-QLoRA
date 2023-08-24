@@ -147,7 +147,7 @@ model_output
 ### 1. AlpaGasus Evaluation
 
 We tried to follow the evaluation metric introduced by AlpaGasus paper. 
-During the process, we consulted the code by gpt4life, an unofficial implementation of AlpaGasus.
+During the process, we consulted the code by [gpt4life](https://github.com/gpt4life/alpagasus).
 We used the gpt-3.5-turbo as the evaluator model, and [Alpaca2-LoRA-13B](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model. For more detailed information, please refer to the [AlpaGasus-Evaluation](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/evaluation/AlpaGasus-Evaluation) file.
 
 The evaluation result of AlpaGasus2-QLoRA is as follows: 
