@@ -7,7 +7,6 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--file_path", type=str)
-    parser.add_argument("--test_set", type=str)
     parser.add_argument(
         "--output_dir",
         type=str,
@@ -16,8 +15,9 @@ def parse_args():
 
     return parser.parse_args()
 
-def result_process(test_set: str, file_path: str):
+def result_process(file_path: str):
     nums = [252, 180, 80]   # length of each test set(koala, sinstruct, vicuna)
+    test_set = ['sinstruct', 'koala', 'vicuna']
     models = ['alpaca2-alpagasus2-', 'alpagasus2-alpaca2-']
     result_judge = []
     for t in range(len(test_set)):
@@ -93,7 +93,7 @@ def graph(result_list: list[dict], output_dir: str, watch: bool):
 def main():
     args = parse_args()
 
-    graph(result_process(args.test_set, args.file_path), args.output_dir, watch=True)
+    graph(result_process(args.file_path), args.output_dir, watch=True)
 
 if __name__ == "__main__":
     main()
