@@ -118,7 +118,7 @@ python AlpaGasus2-QLoRA/training/finetune.py \
 
 ## Generation
 For generating the output of the AlpaGasus2-QLoRA model, please follow the following code! 
-We only provide the usage of a 13B model, but the use of the 7b model is the same!
+We only provide the usage of a 13B model, but the use of the 7B model is the same!
 
 **AlpaGasus2-QLoRA-13b**
 ```python
@@ -146,7 +146,7 @@ model_output
 ## AlpaGasus2-QLoRA Evaluation
 ### 1. AlpaGasus Evaluation
 
-We tried to follow the evaluation metric introduced by AlpaGasus paper. 
+We tried to follow the evaluation metric introduced by the AlpaGasus paper. 
 During the process, we consulted the code by [gpt4life](https://github.com/gpt4life/alpagasus).
 We used the gpt-3.5-turbo as the evaluator model, and [Alpaca2-LoRA-13B](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model. For more detailed information, please refer to the [AlpaGasus-Evaluation](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/evaluation/AlpaGasus-Evaluation) file.
 
@@ -163,9 +163,9 @@ We believe that these experimental results to the following reasons.
 - Nonetheless, as evident from the outcomes reported in the AlphaGasus paper, AlphaGasus2 demonstrates superior performance when compared to Alpaca2. This result reaffirms that data quality plays an important role than data quantity during the fine-tuning process.
 
 ### 2. Open LLM Leaderboard Evaluation
-AlpaGauss2-QLoRA performance was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) 
-The evaluation task used the tasks specified in HF's Open LLM Leaderboard. (ARC, HellaSwag, MMLU, TruthfulQA)
-The table shows the performance of AlpaGasus2-QLoRA on several benchmarks.
+AlpaGauss2-QLoRA performance was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard).
+The AlpaGauss2-QLoRA was evaluated on the tasks specified in HF's Open LLM Leaderboard(ARC, HellaSwag, MMLU, TruthfulQA).
+The table below shows the performance of AlpaGasus2-QLoRA on the aforementioned tasks.
 
 **Coming Soon!**
 
