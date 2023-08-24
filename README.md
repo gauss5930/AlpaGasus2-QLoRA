@@ -140,9 +140,9 @@ model_output
 
 We tried to follow the evaluation metric introduced by AlpaGasus paper. 
 During the process, we consulted the code by gpt4life, an unofficial implementation of AlpaGasus.
-We used the gpt-3.5-turbo as the evaluator model, and [Alpaca2-LoRA](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model. For more detailed information, please refer to the [AlpaGasus-Evaluation](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/evaluation/AlpaGasus-Evaluation) file.
+We used the gpt-3.5-turbo as the evaluator model, and [Alpaca2-LoRA-13B](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model. For more detailed information, please refer to the [AlpaGasus-Evaluation](https://github.com/gauss5930/AlpaGasus2-QLoRA/tree/main/evaluation/AlpaGasus-Evaluation) file.
 
-Model-based evaluation results will be uploaded soon!
+![results](https://github.com/gauss5930/AlpaGasus2-QLoRA/assets/80087878/1dbc56ac-5cb0-4821-95ed-267e79acfd3f)
 
 ### 2. Open LLM Leaderboard Evaluation
 AlpaGauss2-QLoRA performance was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) 
