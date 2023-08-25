@@ -1,17 +1,17 @@
 # AlpaGasus2-QLoRA 🦙🦄🤏
-This is an unofficial implementation of "AlpaGasus: Training a better Alpaca with Fewer Data." with LLaMA2 & QLoRA! The trained model is available at the [HuggingFace Hub](https://huggingface.co/StudentLLM)
+This is an unofficial implementation of "AlpaGasus: Training a better Alpaca with Fewer Data." with LLaMA2 & QLoRA! The trained model is available at the [HuggingFace Hub](https://huggingface.co/StudentLLM).
 
-This repository contains the source codes implementing AlpaGasus2-QLoRA with LLaMA2 and QLoRA.
-Model size variants are 7B and 13B, for each of them we used [LLaMA2-7B-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) and [LLaMA2-13B-hf](https://huggingface.co/meta-llama/Llama-2-13b-hf). 
-[gpt4life](https://github.com/gpt4life/alpagasus)'s alpaca_t45 dataset filtered by gpt-3.5-turbo-0301 was utilized.
+This repository houses the source code that implements AlpaGasus2-QLoRA with LLaMA2 and QLoRA.
+Model size variants are 7B and 13B, as we utilized [LLaMA2-7B-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) and [LLaMA2-13B-hf](https://huggingface.co/meta-llama/Llama-2-13b-hf), respectively. 
+[gpt4life](https://github.com/gpt4life/alpagasus)'s alpaca_t45 dataset filtered by gpt-3.5-turbo-0301 was used.
 
-For implementing AlpaGasus2-QLoRA, Google Colab's single A100 40G GPU was used! 
-In addition, we used [QLoRA](https://arxiv.org/abs/2305.14314) to implement the large model in only one GPU.
-For implementing AlpaGasus2-QLoRA with QLoRA, HuggingFace's PEFT and BitsAndBytes library were utilized.
+For AlpaGasus2-QLoRA fine-tuning, Google Colab's single A100 40G GPU was used! 
+In addition, we leveraged [QLoRA](https://arxiv.org/abs/2305.14314) to implement the large model with only one GPU.
+To implement the model with QLoRA, HuggingFace's PEFT and the BitsAndBytes library were employed.
 Further, the SFTTrainer of trl library was used to fine-tune the model.
 
-For evaluating AlpaGasus2-QLoRA, we tried to follow the evaluation metric of AlpaGasus as much as possible.
-gpt-3.5-turbo was used for the evaluator model, and [Alpaca2-LoRA](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) was used for the comparison model.
+To evaluate AlpaGasus2-QLoRA, we endeavored to align our evaluation metric as closely as possible with the original AlpaGasus.
+We utilized the gpt-3.5-turbo as the evaluator model and [Alpaca2-LoRA](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model.
 
 
 
@@ -159,7 +159,7 @@ In the AlphaGasus paper, they also claimed that AlphaGasus outperforms Alpaca.
 However, the results in the paper do not exhibit a substantial difference in performance.
 We believe that these experimental results to the following reasons.
 
-- While AlphaGasus2 was directly fine-tuned using the LLaMA2 model by us, the resource constraints prevented separate fine-tuning of Alpaca2. Consequently, we employed a pre-existing model deemed suitable. However, due to the inability to access precise learning specifics, we cannot ascertain the adequacy of the training process, thereby hindering a detailed analysis of the underlying reasons for the obtained results. Nevertheless, it is my conjecture that the substantial variance in performance stems from potential imperfections in the fine-tuning of the Alpaca2 model obtained from the HuggingFace Hub.
+- While AlphaGasus2 was directly fine-tuned using the LLaMA2 model by us, the resource constraints prevented separate fine-tuning of Alpaca2. Consequently, we employed a pre-existing model deemed suitable. However, due to the inability to access precise learning specifics, we cannot ascertain the adequacy of the training process, thereby hindering a detailed analysis of the underlying reasons for the obtained results. Nevertheless, it is our conjecture that the substantial variance in performance stems from potential imperfections in the fine-tuning of the Alpaca2 model obtained from the HuggingFace Hub.
 - Nonetheless, as evident from the outcomes reported in the AlphaGasus paper, AlphaGasus2 demonstrates superior performance when compared to Alpaca2. This result reaffirms that data quality plays an important role than data quantity during the fine-tuning process.
 
 ### 2. Open LLM Leaderboard Evaluation
