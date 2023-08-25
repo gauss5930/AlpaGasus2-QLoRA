@@ -169,12 +169,12 @@ The table below shows the performance of AlpaGasus2-QLoRA on the aforementioned 
 
 **Coming Soon!**
 
-|Benchmarks|7B|13B|
-|---|---|---|
-|ARC|||
-|HellaSwag|||
-|MMLU|||
-|TruthfulQA|||
+|Benchmarks|13B|
+|---|---|
+|ARC||
+|HellaSwag||
+|MMLU||
+|TruthfulQA||
 
 ## References
 - [Llama2](https://arxiv.org/abs/2307.09288)
