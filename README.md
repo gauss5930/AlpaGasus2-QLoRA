@@ -1,5 +1,5 @@
 # AlpaGasus2-QLoRA 🦙🦄🤏
-This is an unofficial implementation of 'AlpaGasus: Training a better Alpaca with Fewer Data.' with LLaMA2 & QLoRA! The trained model is available at the [HuggingFace Hub](https://huggingface.co/StudentLLM)
+This is an unofficial implementation of "AlpaGasus: Training a better Alpaca with Fewer Data." with LLaMA2 & QLoRA! The trained model is available at the [HuggingFace Hub](https://huggingface.co/StudentLLM)
 
 This repository contains the source codes implementing AlpaGasus2-QLoRA with LLaMA2 and QLoRA.
 Model size variants are 7B and 13B, for each of them we used [LLaMA2-7B-hf](https://huggingface.co/meta-llama/Llama-2-7b-hf) and [LLaMA2-13B-hf](https://huggingface.co/meta-llama/Llama-2-13b-hf). 
