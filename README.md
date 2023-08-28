@@ -75,7 +75,7 @@ python AlpaGasus2-QLoRA/training/finetune.py \
     --auth_token 'your HuggingFace Authorization code' \
     --num_epochs 3 \
     --learning_rate 2e-5 \
-    --val_set_size 0.05
+    --val_set_size 0
 ```
 
 - For the instruction-finetuning of LLaMA-2-13B:
@@ -89,7 +89,7 @@ python AlpaGasus2-QLoRA/training/finetune.py \
     --auth_token 'your HuggingFace authorization key'
     --num_epochs 5 \
     --learning_rate 1e-5
-    --val_set_size 0.05
+    --val_set_size 0
 ```
 
 You can modify the arguments according to your taste!
@@ -106,7 +106,7 @@ python AlpaGasus2-QLoRA/training/finetune.py \
     --num_epochs 3 \
     --learning_rate 2e-5 \
     --cutoff_len 512 \
-    --val_set_size 0.05 \
+    --val_set_size 0 \
     --load_in_4bit True \
     --bnb_4bit_quant_type 'nf4' \
     --bnb_4bit_double_quant True \
