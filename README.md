@@ -15,6 +15,7 @@ We utilized the gpt-3.5-turbo as the evaluator model and [Alpaca2-LoRA](https://
 
 ## News
 [2023.08] AlpaGasus2-13B-QLoRA model was uploaded on the Huggingface hub. [link](https://huggingface.co/StudentLLM/Alpagasus-2-13B-QLoRA)
+
 [2023.08] AlpaGasus2-7B-QLoRA model was uploaded on the Huggingface hub. [link](https://huggingface.co/StudentLLM/Alpagasus-2-7B-QLoRA)
 
 ## Dataset
