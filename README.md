@@ -13,7 +13,9 @@ Further, the SFTTrainer of trl library was used to fine-tune the model.
 To evaluate AlpaGasus2-QLoRA, we endeavored to align our evaluation metric as closely as possible with the original AlpaGasus.
 We utilized the gpt-3.5-turbo as the evaluator model and [Alpaca2-LoRA](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model.
 
-
+## News
+[2023.08] AlpaGasus2-13B-QLoRA model was uploaded on the Huggingface hub. [link](https://huggingface.co/StudentLLM/Alpagasus-2-13B-QLoRA)
+[2023.08] AlpaGasus2-7B-QLoRA model was uploaded on the Huggingface hub. [link](https://huggingface.co/StudentLLM/Alpagasus-2-7B-QLoRA)
 
 ## Dataset
 AlpaGasus carefully selected higher-quality data through filtering on the original Alpaca instruction dataset to show improved performance than the original Alpaca.
