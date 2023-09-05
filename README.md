@@ -14,6 +14,10 @@ To evaluate AlpaGasus2-QLoRA, we endeavored to align our evaluation metric as cl
 We utilized the gpt-3.5-turbo as the evaluator model and [Alpaca2-LoRA](https://huggingface.co/Abe13/Llama-2-13b-hf-SFT_Lora_Alpaca-juniper-v2) as the comparison model.
 
 ## News
+[2023.09] Thanks to [@GPT4animal](https://github.com/GPT4animal) for mentioning our repository in [implementation of the AlpaGasus repo](https://github.com/gpt4life/alpagasus)! Please refer to the [implementation of the AlpaGasus repo](https://github.com/gpt4life/alpagasus) to get more information about the method for implementing AlpaGasus!
+
+[2023.09] Thanks to [@Lichang-Chen](https://github.com/Lichang-Chen) for mentioning our repository in the [AlpaGasus repository](https://github.com/Lichang-Chen/AlpaGasus)! He is the author of '[AlpaGasus: Training a Better Alpaca with Fewer Data](https://arxiv.org/abs/2307.08701),' Please refer to the [AlpaGasus repository](https://github.com/Lichang-Chen/AlpaGasus) to get more information about AlpaGasus!
+
 [2023.08] AlpaGasus2-13B-QLoRA model was uploaded on the Huggingface hub. [link](https://huggingface.co/StudentLLM/Alpagasus-2-13B-QLoRA)
 
 [2023.08] AlpaGasus2-7B-QLoRA model was uploaded on the Huggingface hub. [link](https://huggingface.co/StudentLLM/Alpagasus-2-7B-QLoRA)
