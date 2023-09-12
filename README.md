@@ -170,16 +170,17 @@ We believe that these experimental results to the following reasons.
 - Nonetheless, as evident from the outcomes reported in the AlphaGasus paper, AlphaGasus2 demonstrates superior performance when compared to Alpaca2. This result reaffirms that data quality plays an important role than data quantity during the fine-tuning process.
 
 ### 2. Open LLM Leaderboard Evaluation
-[AlpaGauss2-QLoRA](https://huggingface.co/StudentLLM/Alpagasus-2-13B-QLoRA-merged) performance will be uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard).
-The AlpaGauss2-QLoRA will be evaluated on the tasks specified in HF's Open LLM Leaderboard(ARC, HellaSwag, MMLU, TruthfulQA).
+[AlpaGauss2-QLoRA](https://huggingface.co/StudentLLM/Alpagasus-2-13B-QLoRA-merged) performance was uploaded on HuggingFace's [Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard).
+The AlpaGauss2-QLoRA was evaluated on the tasks specified in HF's Open LLM Leaderboard(ARC, HellaSwag, MMLU, TruthfulQA).
 
 
 |Benchmarks|13B|
 |---|---|
-|ARC||
-|HellaSwag||
-|MMLU||
-|TruthfulQA||
+|Average|59.34|
+|ARC|61.09|
+|HellaSwag|82.46|
+|MMLU|55.27|
+|TruthfulQA|38.53|
 
 ## References
 - [Llama2](https://arxiv.org/abs/2307.09288)
